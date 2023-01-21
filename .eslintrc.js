@@ -41,11 +41,5 @@ module.exports = {
       "error",
       { destructuredArrayIgnorePattern: "^_" }, // ignores destructured array variables whose names begin with an underscore
     ],
-    "import/no-extraneous-dependencies": [
-      "error",
-      {
-        projectDependencies: false,
-      },
-    ],
   },
 };
