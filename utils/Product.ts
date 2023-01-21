@@ -1,6 +1,5 @@
 import {
   randCompanyName,
-  randImg,
   randPastDate,
   randPhrase,
   randProductDescription,
@@ -29,14 +28,14 @@ export interface ProductObject {
 export const generateRandomProducts = (qty?: number): Array<ProductObject> =>
   Array.from({ length: qty ?? 96 }).map(() => ({
     id: randUuid(),
-    skuId: randUuid(),
+    skuId: `SKU-${randUuid().slice(0, 8)}`,
     createdAt: randPastDate().toString(),
     name: randProductName(),
     brand: randCompanyName(),
     description: randProductDescription(),
     ingredients: randPhrase(),
-    media: randImg({ length: 4 }).map((img, idx) => ({
-      src: img,
+    media: Array.from({ length: 3 }).map((img, idx) => ({
+      src: "https://picsum.photos/300",
       name: `Img ${idx}`,
     })),
   }));
