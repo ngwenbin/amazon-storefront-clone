@@ -1,43 +1,25 @@
 import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import Link from "next/link";
-import { initializeApollo } from "../apollo/client";
+import { ProductObject } from "../utils";
 
-const ViewerQuery = gql`
-  query ViewerQuery {
-    viewer {
-      id
+const GetProductsQuery = gql`
+  query GetProductsQuery {
+    getProducts {
       name
-      status
     }
   }
 `;
 
+interface GetProducts {
+  getProducts: Array<ProductObject>;
+}
+
 const Index = () => {
-  const {
-    data: { viewer },
-  } = useQuery(ViewerQuery);
+  const { data } = useQuery<GetProducts>(GetProductsQuery);
 
   return (
-    <div>
-      You're signed in as {viewer.name} and you're {viewer.status} goto{" "}
-      <Link href="/about">static</Link> page.
-    </div>
+    <div>{data?.getProducts && data.getProducts.map((item) => item.name)}</div>
   );
 };
-
-export async function getStaticProps() {
-  const apolloClient = initializeApollo();
-
-  await apolloClient.query({
-    query: ViewerQuery,
-  });
-
-  return {
-    props: {
-      initialApolloState: apolloClient.cache.extract(),
-    },
-  };
-}
 
 export default Index;
