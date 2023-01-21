@@ -1,7 +1,10 @@
+import { generateRandomProducts } from "../utils";
+
 export const resolvers = {
   Query: {
-    viewer() {
-      return { id: 1, name: 'John Smith', status: 'cached' }
+    getProducts() {
+      const products = generateRandomProducts();
+      return products;
     },
   },
-}
+};
