@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   rand,
   randCompanyName,
@@ -48,8 +49,8 @@ export interface ProductObject {
 }
 
 export const generateRandomProducts = (qty?: number): Array<ProductObject> =>
-  Array.from({ length: qty ?? 96 }).map(() => ({
-    id: randUuid(),
+  Array.from({ length: qty ?? 96 }).map((_, idx) => ({
+    id: idx.toString(),
     skuId: `SKU-${randUuid().slice(0, 8)}`,
     createdAt: randPastDate().toString(),
     name: randProductName(),
