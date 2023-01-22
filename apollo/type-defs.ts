@@ -26,8 +26,18 @@ export const typeDefs = gql`
     media: [File]
   }
 
+  type GetProducts {
+    data: [Product]!
+    totalCount: Int!
+  }
+
+  input PaginationInput {
+    limit: Int!
+    offset: Int
+  }
+
   type Query {
     viewer: User
-    getProducts: [Product]!
+    getProducts(input: PaginationInput!): GetProducts!
   }
 `;
