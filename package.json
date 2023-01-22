@@ -12,6 +12,7 @@
     "@as-integrations/next": "^1.1.0",
     "@graphql-tools/schema": "^9.0.9",
     "@ngneat/falso": "^6.4.0",
+    "@tanstack/react-table": "^8.7.6",
     "deepmerge": "4.2.2",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
