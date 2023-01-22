@@ -25,6 +25,7 @@ const Card = ({ data, onClickCb }: CardProps) => {
         ) : null}
       </div>
       <div className="flex flex-col px-4 pt-4 border-t bg-gray-50 h-28">
+        <p className="font-medium text-xs">Data Id: {data.id}</p>
         <p className="font-medium text-xs text-[#6f7999]">{data.skuId}</p>
         <p className="font-semibold text-sm text-[#000]">{data.name}</p>
         <p className="font-medium text-xs text-[#6f7999]">{data.brand}</p>
