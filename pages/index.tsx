@@ -8,9 +8,6 @@ const IndexPage = () => {
 
   return (
     <div className="p-4">
-      <Link href="infinite-scroll" className="text-blue-500">
-        See infinite scroll demo &gt;
-      </Link>
       <div className="flex gap-4">
         <div className="min-w-[268px] font-bold text-base">Filter by</div>
         <div className="w-full">
