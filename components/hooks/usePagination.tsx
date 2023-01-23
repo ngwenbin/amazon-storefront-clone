@@ -40,6 +40,10 @@ const usePagination = ({
   const getCurrPage = () => currentPageIndx;
   const getPageCount = () => numOfPages;
   const getPageSize = () => ItemsPerPage;
+  const updatePageSize = (val: number) => {
+    setPageSize(val);
+    setCurrentPageIndx(0);
+  };
 
   useEffect(() => {
     setCanNextPage(currentPageIndx < numOfPages - 1);
@@ -53,13 +57,13 @@ const usePagination = ({
       rawCurrPageIdx: currentPageIndx,
     };
     pageChangeHandler(settings);
-  }, [currentPageIndx, pageSize]);
+  }, [currentPageIndx]);
 
   return {
     getCurrPage,
     getPageCount,
     getPageSize,
-    setPageSize,
+    setPageSize: (val: number) => updatePageSize(val),
     nextPage: onNextPage,
     prevPage: onPrevPage,
     firstPage: onFirstPage,
