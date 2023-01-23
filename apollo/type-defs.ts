@@ -15,6 +15,16 @@ export const typeDefs = gql`
     format: String
   }
 
+  enum Categories {
+    BOOKS
+    GROCERY
+    AUTOMOTIVE
+    GARDEN
+    CRAFTS
+    COLLECTIBLES
+    FOOD
+  }
+
   type Product {
     id: ID!
     name: String
@@ -22,6 +32,7 @@ export const typeDefs = gql`
     skuId: String
     brand: String
     description: String
+    categories: Categories!
     ingredients: String
     media: [File]
   }
@@ -31,9 +42,14 @@ export const typeDefs = gql`
     totalCount: Int!
   }
 
+  input ProductFilterInput {
+    categories: String
+  }
+
   input PaginationInput {
     limit: Int!
     offset: Int
+    filter: ProductFilterInput
   }
 
   type Query {

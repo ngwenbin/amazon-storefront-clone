@@ -30,6 +30,16 @@ const imgArr = [
   "https://m.media-amazon.com/images/I/81xJ0pT9NcL._SL1500_.jpg",
 ];
 
+export enum ProductCategories {
+  Books = "BOOKS",
+  Grocery = "GROCERY",
+  Automotive = "AUTOMOTIVE",
+  Garden = "GARDEN",
+  Crafts = "CRAFTS",
+  Collectibles = "COLLECTIBLES",
+  Food = "FOOD",
+}
+
 export interface ProductMedia {
   src: string;
   name?: string | null;
@@ -41,6 +51,7 @@ export interface ProductObject {
   id: string;
   name?: string | null;
   createdAt: string;
+  categories: ProductCategories;
   skuId?: string | null;
   brand?: string | null;
   description?: string | null;
@@ -55,6 +66,7 @@ export const generateRandomProducts = (qty?: number): Array<ProductObject> =>
     createdAt: randPastDate().toString(),
     name: randProductName(),
     brand: randCompanyName(),
+    categories: rand(Object.values(ProductCategories)),
     description: randProductDescription(),
     ingredients: randPhrase(),
     media: Array.from({ length: 2 }).map((img, idx) => ({

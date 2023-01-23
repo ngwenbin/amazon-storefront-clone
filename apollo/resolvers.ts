@@ -34,18 +34,26 @@ export const resolvers = {
         console.log("GETTING PAGINTED PRODUCTS", args);
         await delay(randNumber({ min: 400, max: 1000, precision: 100 }));
         const {
-          input: { limit, offset },
+          input: { limit, offset, filter: filters },
         } = args;
-
         const elementStart = offset ?? 0;
         const elementEnd = limit + elementStart;
         const maxDataSize = data.data.length;
-        const products = data.data.slice(
+        let filteredData = JSON.parse(JSON.stringify(data.data));
+        if (filters) {
+          Object.keys(filters).forEach((filterKey) => {
+            filteredData = filteredData.filter(
+              (dataKey) => dataKey[filterKey] === filters[filterKey]
+            );
+          });
+        }
+
+        const products = filteredData.slice(
           elementStart,
           elementEnd > maxDataSize ? maxDataSize : elementEnd
         );
 
-        return { data: products, totalCount: data.data.length };
+        return { data: products, totalCount: filteredData.length };
       } catch (err) {
         const error = err as Error;
         throw new GraphQLError(error.message);

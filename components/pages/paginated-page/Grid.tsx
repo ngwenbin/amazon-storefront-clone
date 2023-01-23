@@ -1,18 +1,27 @@
-import { gql, useLazyQuery } from "@apollo/client";
+/* eslint-disable jsx-a11y/control-has-associated-label */
+import { gql, useQuery } from "@apollo/client";
 import {
   ColumnDef,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { ProductObject } from "../../../utils";
+import { ProductCategories, ProductObject } from "../../../utils";
 import Card from "../../Card";
+import DebouncedInput from "../../DebouncedInput";
 import Spinner from "../../Spinner";
 import { usePagination } from "../../hooks";
+import Pagination from "./Pagination";
 
 const GetPaginatedProductsQuery = gql`
-  query GetPaginatedProductsQuery($limit: Int!, $offset: Int) {
-    getPaginatedProducts(input: { limit: $limit, offset: $offset }) {
+  query GetPaginatedProductsQuery(
+    $limit: Int!
+    $offset: Int
+    $filter: ProductFilterInput
+  ) {
+    getPaginatedProducts(
+      input: { limit: $limit, offset: $offset, filter: $filter }
+    ) {
       totalCount
       data {
         id
@@ -22,6 +31,7 @@ const GetPaginatedProductsQuery = gql`
         media {
           src
         }
+        categories
       }
     }
   }
@@ -37,7 +47,7 @@ interface GetProducts {
 const ITEMS_PER_PAGE = 10;
 
 const PaginatedGrid = () => {
-  const [fetchData, { loading, data }] = useLazyQuery<GetProducts>(
+  const { loading, data, refetch } = useQuery<GetProducts>(
     GetPaginatedProductsQuery,
     {
       variables: {
@@ -84,15 +94,6 @@ const PaginatedGrid = () => {
   );
 
   useEffect(() => {
-    fetchData({
-      variables: {
-        limit: ITEMS_PER_PAGE,
-        offset: 0,
-      },
-    });
-  }, []);
-
-  useEffect(() => {
     if (data && data?.getPaginatedProducts) {
       setProductData(data.getPaginatedProducts);
     }
@@ -110,15 +111,22 @@ const PaginatedGrid = () => {
 
   const pagination = usePagination({
     pageChangeHandler: (settings) =>
-      fetchData({
-        variables: {
-          limit: settings.limit,
-          offset: settings.offset,
-        },
+      refetch({
+        limit: settings.limit,
+        offset: settings.offset,
       }),
     totalCount: productData?.totalCount,
     ItemsPerPage: ITEMS_PER_PAGE,
   });
+
+  const onFilterCallback = (updatedFilter: any) => {
+    pagination.setPage(0);
+    refetch({
+      limit: pagination.getPageSize(),
+      offset: 0,
+      filter: { ...updatedFilter },
+    });
+  };
 
   if (loading) {
     return (
@@ -127,86 +135,43 @@ const PaginatedGrid = () => {
       </div>
     );
   }
-
   return (
-    <div className="flex flex-col gap-y-8">
-      <div className="grid grid-flow-row grid-cols-[repeat(auto-fit,225px)] gap-6 grow">
-        {grid.getRowModel().flatRows.map((item, idx) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Card key={idx} data={item.original as ProductObject} />
-        ))}
-      </div>
-      <div>
-        <div className="flex flex-col items-center">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="border rounded p-1 disabled:bg-gray-100"
-              onClick={() => pagination.firstPage()}
-              disabled={!pagination.canPrevPage}
-            >
-              {"<<"}
-            </button>
-            <button
-              type="button"
-              className="border rounded p-1 disabled:bg-gray-100"
-              onClick={() => pagination.prevPage()}
-              disabled={!pagination.canPrevPage}
-            >
-              {"<"}
-            </button>
-            <button
-              type="button"
-              className="border rounded p-1 disabled:bg-gray-100"
-              onClick={() => pagination.nextPage()}
-              disabled={!pagination.canNextPage}
-            >
-              {">"}
-            </button>
-            <button
-              type="button"
-              className="border rounded p-1 disabled:bg-gray-100"
-              onClick={() => pagination.lastPage()}
-              disabled={!pagination.canNextPage}
-            >
-              {">>"}
-            </button>
-            <span className="flex items-center gap-1">
-              <div>Page</div>
-              <strong>
-                {pagination.getCurrPage() + 1} of {pagination.getPageCount()}
-              </strong>
-            </span>
-            <span className="flex items-center gap-1">
-              | Go to page:
-              <input
-                type="number"
-                defaultValue={pagination.getCurrPage() + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  pagination.setPage(page);
-                }}
-                className="border p-1 rounded w-16"
-              />
-            </span>
-            <select
-              onChange={(e) => {
-                pagination.setPageSize(Number(e.target.value));
-              }}
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
+    <div className="flex">
+      <div className="pr-8">
+        <p className="font-semibold pb-8 py-3">Filter by</p>
+        <div className="flex flex-col gap-y-4">
+          <div>
+            <datalist id="categories-list">
+              {Object.values(ProductCategories).map((listValue) => (
+                <option value={listValue} key={listValue} />
               ))}
-            </select>
+            </datalist>
           </div>
+          <DebouncedInput
+            id="categories"
+            value=""
+            onChange={(value) =>
+              value && onFilterCallback({ categories: value })
+            }
+            list="categories-list"
+          />
         </div>
-        {/* <Pagination
-          totalCount={productData?.totalCount}
-          onPageChangeCb={(settings) => loadProducts(settings)}
-          initialPageSize={10}
-        /> */}
+      </div>
+      <div className="flex flex-col gap-y-8 grow">
+        <DebouncedInput
+          id="searchBox"
+          value=""
+          onChange={(value) => console.log("Search", value)}
+        />
+        <div className="grid grid-flow-row grid-cols-[repeat(auto-fit,225px)] gap-6 grow">
+          {grid.getRowModel().flatRows.map((item, idx) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Card key={idx} data={item.original as ProductObject} />
+          ))}
+        </div>
+        <div>
+          <Pagination pagination={pagination} />
+        </div>
       </div>
     </div>
   );
