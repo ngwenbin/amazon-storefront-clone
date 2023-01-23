@@ -20,7 +20,24 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: createIsomorphLink(),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            getProducts: {
+              // Don't cache separate results based on
+              // any of this field's arguments.
+              keyArgs: false,
+              // Concatenate the incoming list items with
+              // the existing list items.
+              merge(existing, incoming) {
+                return merge(existing, incoming);
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 }
 
