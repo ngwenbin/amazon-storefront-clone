@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { randNumber } from "@ngneat/falso";
 import { GraphQLError } from "graphql";
+import { delay } from "../utils";
 import data from "./mockData.json";
 
 // eslint-disable-next-line import/prefer-default-export
 export const resolvers = {
   Query: {
-    getProducts(_parent, args, _context, _info) {
+    async getProducts(_parent, args, _context, _info) {
       try {
         console.log("GETTING PRODUCTS", args);
+        await delay(randNumber({ min: 400, max: 1000, precision: 100 }));
         const {
           input: { limit, offset },
         } = args;
@@ -26,9 +29,10 @@ export const resolvers = {
         throw new GraphQLError(error.message);
       }
     },
-    getPaginatedProducts(_parent, args, _context, _info) {
+    async getPaginatedProducts(_parent, args, _context, _info) {
       try {
         console.log("GETTING PAGINTED PRODUCTS", args);
+        await delay(randNumber({ min: 400, max: 1000, precision: 100 }));
         const {
           input: { limit, offset },
         } = args;

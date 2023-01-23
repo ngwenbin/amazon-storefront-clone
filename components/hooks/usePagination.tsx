@@ -48,7 +48,7 @@ const usePagination = ({
       rawCurrPageIdx: 0,
     };
     pageChangeHandler(settings);
-    setCurrentPageIndx(0);
+    // setCurrentPageIndx(0);
   };
 
   useEffect(() => {

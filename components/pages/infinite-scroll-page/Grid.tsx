@@ -1,4 +1,4 @@
-import { gql, useLazyQuery } from "@apollo/client";
+import { NetworkStatus, gql, useLazyQuery } from "@apollo/client";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -7,6 +7,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { ProductObject } from "../../../utils";
 import Card from "../../Card";
+import Spinner from "../../Spinner";
 
 const GetProductsQuery = gql`
   query GetProductsQuery($limit: Int!, $offset: Int) {
@@ -35,14 +36,13 @@ interface GetProducts {
 const ITEMS_PER_PAGE = 10;
 
 const InfiniteScrollGrid = () => {
-  const [fetchData, { loading, data, fetchMore }] = useLazyQuery<GetProducts>(
-    GetProductsQuery,
-    {
+  const [fetchData, { loading, data, fetchMore, networkStatus }] =
+    useLazyQuery<GetProducts>(GetProductsQuery, {
+      notifyOnNetworkStatusChange: true,
       variables: {
         limit: ITEMS_PER_PAGE,
       },
-    }
-  );
+    });
   const [productData, setProductData] = useState<
     GetProducts["getProducts"] | null
   >();
@@ -104,33 +104,40 @@ const InfiniteScrollGrid = () => {
     // debugTable: true,
   });
 
-  return (
-    <div className="flex flex-col">
-      {loading ? (
-        <p>Is Loading</p>
-      ) : (
-        <div className="grid grid-flow-row grid-cols-[repeat(auto-fit,225px)] gap-6 grow">
-          {grid.getRowModel().flatRows.map((item, idx) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Card key={idx} data={item.original as ProductObject} />
-          ))}
-        </div>
-      )}
-      <div>
-        <button
-          type="button"
-          className="border py-2 px-4 rounded my-8 border-gray-300 w-min whitespace-nowrap"
-          onClick={() =>
-            fetchMore({
-              variables: {
-                offset: data.getProducts.data.length,
-              },
-            })
-          }
-        >
-          Load More
-        </button>
+  if (loading && networkStatus !== NetworkStatus.fetchMore) {
+    return (
+      <div className="flex items-center h-full justify-center">
+        <Spinner width={10} height={10} />
       </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="w-full grid grid-flow-row grid-cols-[repeat(auto-fit,225px)] gap-6 grow">
+        {grid.getRowModel().flatRows.map((item, idx) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Card key={idx} data={item.original as ProductObject} />
+        ))}
+      </div>
+      <button
+        type="button"
+        className="border py-2 px-4 rounded my-8 border-gray-300 hover:bg-gray-200"
+        onClick={() =>
+          fetchMore({
+            variables: {
+              offset: data.getProducts.data.length,
+            },
+          })
+        }
+      >
+        <div className="flex gap-x-1 items-center">
+          {networkStatus === NetworkStatus.fetchMore ? (
+            <Spinner width={4} />
+          ) : null}
+          Load More
+        </div>
+      </button>
     </div>
   );
 };
