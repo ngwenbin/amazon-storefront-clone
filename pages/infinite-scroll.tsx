@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { PaginatedGrid } from "../components";
+import { InfiniteScrollGrid } from "../components";
 import { ProductObject } from "../utils";
 
-const IndexPage = () => {
+const InfiniteScrollPage = () => {
   const [_productData, _setProductData] = useState<Array<ProductObject>>([]);
 
   return (
@@ -10,11 +10,11 @@ const IndexPage = () => {
       <div className="flex gap-4 h-full">
         <div className="min-w-[268px] font-bold text-base">Filter by</div>
         <div className="w-full h-full">
-          <PaginatedGrid />
+          <InfiniteScrollGrid />
         </div>
       </div>
     </div>
   );
 };
 
-export default IndexPage;
+export default InfiniteScrollPage;

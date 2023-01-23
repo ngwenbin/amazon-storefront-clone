@@ -39,5 +39,6 @@ export const typeDefs = gql`
   type Query {
     viewer: User
     getProducts(input: PaginationInput!): GetProducts!
+    getPaginatedProducts(input: PaginationInput!): GetProducts!
   }
 `;
