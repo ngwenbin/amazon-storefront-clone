@@ -42,6 +42,12 @@ const usePagination = ({
   const getPageSize = () => ItemsPerPage;
   const updatePageSize = (val: number) => {
     setPageSize(val);
+    const settings = {
+      offset: 0,
+      limit: val,
+      rawCurrPageIdx: 0,
+    };
+    pageChangeHandler(settings);
     setCurrentPageIndx(0);
   };
 

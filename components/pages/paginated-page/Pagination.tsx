@@ -72,7 +72,7 @@ const Pagination = ({
             className="border p-1 rounded w-16"
           />
         </span>
-        {/* <select
+        <select
           onChange={(e) => {
             pagination.setPageSize(Number(e.target.value));
           }}
@@ -82,7 +82,7 @@ const Pagination = ({
               Show {pageSize}
             </option>
           ))}
-        </select> */}
+        </select>
       </div>
     </div>
   );

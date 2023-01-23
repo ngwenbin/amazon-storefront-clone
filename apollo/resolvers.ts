@@ -28,7 +28,7 @@ export const resolvers = {
     },
     getPaginatedProducts(_parent, args, _context, _info) {
       try {
-        console.log("GETTING PRODUCTS", args);
+        console.log("GETTING PAGINTED PRODUCTS", args);
         const {
           input: { limit, offset },
         } = args;
