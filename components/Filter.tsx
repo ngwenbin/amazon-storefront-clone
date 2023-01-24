@@ -38,6 +38,7 @@ export const Filter = ({
       label={label}
       value={value ?? ""}
       trigger="debounce"
+      placeholder="Filter..."
       onChange={(value) => {
         if (value) {
           onChange({ [filterKey]: value });

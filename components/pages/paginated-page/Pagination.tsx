@@ -43,14 +43,14 @@ const Pagination = ({ pagination }: PaginationProps) => (
       <span className="flex items-center gap-1">
         <div>Page</div>
         <strong>
-          {pagination.getCurrPage() + 1} of {pagination.getPageCount()}
+          {pagination.getCurrPage + 1} of {pagination.getPageCount}
         </strong>
       </span>
       <span className="flex items-center gap-1">
         | Go to page:
         <input
           type="number"
-          defaultValue={pagination.getCurrPage() + 1}
+          defaultValue={pagination.getCurrPage + 1}
           onChange={(e) => {
             const page = e.target.value ? Number(e.target.value) - 1 : 0;
             pagination.setPage(page);

@@ -128,18 +128,31 @@ const PaginatedGrid = () => {
     ItemsPerPage: ITEMS_PER_PAGE,
   });
 
-  const onFilterCallback = (updatedFilter?: FilterReturnValue) => {
+  const onFilterCallback = (filterKey?: FilterReturnValue) => {
     if (!loading) {
       console.log("Filter CB");
 
       pagination.setPage(0);
       refetch({
-        limit: pagination.getPageSize(),
+        limit: pagination.getPageSize,
         offset: 0,
-        filter: updatedFilter,
+        filter: filterKey,
       });
     }
   };
+
+  // const onSearchCallback = (searchKey?: FilterReturnValue) => {
+  //   if (!loading) {
+  //     console.log("Filter CB");
+
+  //     pagination.setPage(0);
+  //     refetch({
+  //       limit: pagination.getPageSize,
+  //       offset: 0,
+  //       filter: searchKey,
+  //     });
+  //   }
+  // };
 
   return (
     <div className="flex h-full">
