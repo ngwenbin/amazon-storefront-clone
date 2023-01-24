@@ -24,12 +24,26 @@ const Card = ({ data, onClickCb }: CardProps) => {
           />
         ) : null}
       </div>
-      <div className="flex flex-col px-4 py-4 border-t">
-        <p className="font-medium text-xs">Data Id: {data.id}</p>
-        <p className="font-medium text-xs text-[#6f7999] pb-2">{data.skuId}</p>
-        <p className="font-semibold text-sm text-[#000]">{data.name}</p>
-        <p className="font-medium text-xs text-[#6f7999]">{data.brand}</p>
-        <p className="font-medium text-xs text-[#6f7999]">{data.categories}</p>
+      <div className="flex flex-col px-4 py-4 border-t gap-y-2">
+        <p className="font-bold text-lg text-black">$&nbsp;{data?.price}</p>
+        <p className="font-semibold text-sm text-[#000]">
+          {data?.popularity} / 10
+        </p>
+
+        <div>
+          <p className="font-semibold text-sm text-[#000]">{data?.name}</p>
+          <p className="font-medium text-xs text-[#6f7999] italic">
+            {data?.brand}
+          </p>
+        </div>
+        <p className="font-medium text-xs text-[#6f7999]">{data?.categories}</p>
+
+        <div>
+          <p className="font-medium text-xs">Id: {data?.id}</p>
+          <p className="font-medium text-xs text-[#6f7999] pb-2">
+            {data?.skuId}
+          </p>
+        </div>
       </div>
     </div>
   );

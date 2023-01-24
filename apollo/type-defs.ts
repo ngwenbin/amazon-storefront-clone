@@ -2,6 +2,21 @@ import { gql } from "@apollo/client";
 
 // eslint-disable-next-line import/prefer-default-export
 export const typeDefs = gql`
+  enum Categories {
+    BOOKS
+    GROCERY
+    AUTOMOTIVE
+    GARDEN
+    CRAFTS
+    COLLECTIBLES
+    FOOD
+  }
+
+  enum Sort {
+    ascending
+    descending
+  }
+
   type User {
     id: ID!
     name: String!
@@ -15,16 +30,6 @@ export const typeDefs = gql`
     format: String
   }
 
-  enum Categories {
-    BOOKS
-    GROCERY
-    AUTOMOTIVE
-    GARDEN
-    CRAFTS
-    COLLECTIBLES
-    FOOD
-  }
-
   type Product {
     id: ID!
     name: String
@@ -35,6 +40,8 @@ export const typeDefs = gql`
     categories: Categories!
     ingredients: String
     media: [File]
+    price: Float
+    popularity: Float
   }
 
   type GetProducts {
@@ -50,11 +57,18 @@ export const typeDefs = gql`
     ingredients: String
   }
 
+  input ProductSortInput {
+    createdAt: Sort
+    price: Sort
+    popularity: Sort
+  }
+
   input PaginationInput {
     limit: Int!
     offset: Int
     filter: [ProductFilterInput]
     searchKey: String
+    orderBy: ProductSortInput
   }
 
   type Query {

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randNumber } from "@ngneat/falso";
+import dayjs from "dayjs";
 import { GraphQLError } from "graphql";
 import { delay, fuzzyObjectKeySearch } from "~/utils";
 import data from "./mockData.json";
@@ -34,7 +35,7 @@ export const resolvers = {
         console.log("GETTING PAGINTED PRODUCTS", args);
         await delay(randNumber({ min: 400, max: 1000, precision: 100 }));
         const {
-          input: { limit, offset, filter: filters, searchKey },
+          input: { limit, offset, filter: filters, searchKey, orderBy },
         } = args;
         const elementStart = offset ?? 0;
         const elementEnd = limit + elementStart;
@@ -58,6 +59,31 @@ export const resolvers = {
             processedData,
             "name"
           );
+        }
+        if (orderBy) {
+          const [key, value] = Object.entries(orderBy)[0];
+          const sortOrder = value === "descending" ? -1 : 1;
+          if (key === "createdAt") {
+            processedData.sort((a, b) => {
+              const newA = dayjs(a[key]);
+              const newB = dayjs(b[key]);
+              return newA.diff(newB) * sortOrder;
+            });
+          } else {
+            processedData.sort((a, b) => {
+              const newA =
+                typeof a[key] !== "string" ? a[key].toString() : a[key];
+              const newB =
+                typeof b[key] !== "string" ? b[key].toString() : b[key];
+              return (
+                newA
+                  .toLowerCase()
+                  .localeCompare(newB.toLowerCase(), undefined, {
+                    numeric: true,
+                  }) * sortOrder
+              );
+            });
+          }
         }
         const products = processedData.slice(
           elementStart,

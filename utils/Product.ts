@@ -2,6 +2,8 @@
 import {
   rand,
   randCompanyName,
+  randFloat,
+  randNumber,
   randPastDate,
   randPhrase,
   randProductDescription,
@@ -57,6 +59,8 @@ export interface ProductObject {
   description?: string | null;
   ingredients?: string | null;
   media?: Array<ProductMedia | null> | null;
+  popularity?: number;
+  price?: number;
 }
 
 export const generateRandomProducts = (qty?: number): Array<ProductObject> =>
@@ -73,4 +77,6 @@ export const generateRandomProducts = (qty?: number): Array<ProductObject> =>
       src: rand(imgArr),
       name: `Img ${idx}`,
     })),
+    popularity: randFloat({ min: 0, max: 10, fraction: 2 }),
+    price: randFloat({ min: 10, max: 1000, fraction: 2 }),
   }));

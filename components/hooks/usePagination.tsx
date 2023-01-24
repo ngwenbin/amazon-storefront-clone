@@ -150,6 +150,7 @@ const usePagination = ({
     getCurrPage: state.currPageIdx,
     getPageCount: state.numOfPages,
     getPageSize: state.pageSize,
+    getTotalCount: state.totalCount,
     setPageSize: (val: number) => {
       dispatch({ type: "updatePageSize", payload: { pageSize: val } });
       const settings = {

@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { Card, DebouncedInput, Filter, Spinner } from "~/components";
-import { useFilter, usePagination } from "~/components/hooks";
+import { useFilter, usePagination, useSort } from "~/components/hooks";
 import { ProductCategories, ProductObject, enumToOptions } from "~/utils";
 import Pagination from "./Pagination";
 
@@ -17,6 +17,7 @@ const GetPaginatedProductsQuery = gql`
     $offset: Int
     $filter: [ProductFilterInput]
     $searchKey: String
+    $orderBy: ProductSortInput
   ) {
     getPaginatedProducts(
       input: {
@@ -24,6 +25,7 @@ const GetPaginatedProductsQuery = gql`
         offset: $offset
         filter: $filter
         searchKey: $searchKey
+        orderBy: $orderBy
       }
     ) {
       totalCount
@@ -36,6 +38,8 @@ const GetPaginatedProductsQuery = gql`
           src
         }
         categories
+        price
+        popularity
       }
     }
   }
@@ -57,6 +61,9 @@ const PaginatedGrid = () => {
       variables: {
         limit: ITEMS_PER_PAGE,
         offset: 0,
+        orderBy: {
+          popularity: "descending",
+        },
       },
       notifyOnNetworkStatusChange: true,
     }
@@ -141,6 +148,24 @@ const PaginatedGrid = () => {
     },
   });
 
+  const sortBy = useSort({
+    sortByChangeHandler: (settings) => {
+      if (!loading) {
+        pagination.setPage(0);
+        console.log(settings);
+        refetch({
+          limit: pagination.getPageSize,
+          offset: 0,
+          filter: filters.getFilters()?.filterArray,
+          searchKey: filters.getFilters()?.search,
+          orderBy: {
+            [settings?.sortKey]: settings?.sortDirection,
+          },
+        });
+      }
+    },
+  });
+
   return (
     <div className="flex h-full">
       <div className="pr-8">
@@ -166,6 +191,34 @@ const PaginatedGrid = () => {
             trigger="keydown"
             onChange={(value) => filters.searchFilter(value)}
           />
+        </div>
+        <div className="flex justify-between items-center">
+          <p>
+            Showing {pagination.getPageSize} of over{" "}
+            <span className="font-semibold"> {pagination.getTotalCount} </span>
+            products
+          </p>
+          <div>
+            <label htmlFor="cars" className="flex items-center text-xs">
+              <p className="font-semibold pr-1">Sort by:</p>
+              <select
+                name="cars"
+                id="cars"
+                className="bg-gray-100 border p-1 rounded"
+                onChange={(e) => {
+                  const [sortKey, sortDirection] = e.target.value.split(
+                    "-"
+                  ) as [string, "ascending" | "descending"];
+                  sortBy.setSortBy({ sortKey, sortDirection });
+                }}
+              >
+                <option value="popularity-descending">Featured</option>
+                <option value="price-ascending">Price: Low to High</option>
+                <option value="price-descending">Price: High to Low</option>
+                <option value="createdAt-descending">Newest Arrivals</option>
+              </select>
+            </label>
+          </div>
         </div>
         {loading ? (
           <div className="flex items-center h-full justify-center">

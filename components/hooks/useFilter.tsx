@@ -47,6 +47,7 @@ const useFilter = ({ filterChangeHandler }: UseFilterProps) => {
   return {
     searchFilter,
     applyFilter,
+    getFilters: () => filters,
   };
 };
 
