@@ -44,7 +44,7 @@ const DebouncedInput = ({
       ) : null}
       <input
         id={id}
-        className="min-w-[284px] text-sm border rounded py-2 px-3 w-full focus:border-blue-500 focus:outline-none"
+        className="md:min-w-[284px] text-sm border rounded py-2 px-3 w-full focus:border-blue-500 focus:outline-none"
         placeholder="Search..."
         {...props}
         value={val}

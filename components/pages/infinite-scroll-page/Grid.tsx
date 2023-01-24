@@ -154,8 +154,8 @@ const InfiniteScrollGrid = () => {
   });
 
   return (
-    <div className="flex h-full">
-      <div className="pr-8">
+    <div className="flex h-full flex-col md:flex-row">
+      <div className="md:pr-8 flex flex-col pb-4">
         <p className="font-bold py-3 text-lg">Filter by</p>
         <div className="flex flex-col gap-y-8 h-full">
           <Filter
@@ -170,8 +170,8 @@ const InfiniteScrollGrid = () => {
           />
         </div>
       </div>
-      <div className="flex flex-col gap-y-8 grow pb-10">
-        <div className="absolute top-4 w-[50%]">
+      <div className="flex flex-col gap-y-8 grow pb-10 items-center">
+        <div className="absolute top-4 md:w-[50%] right-4 md:right-auto self-start">
           <DebouncedInput
             id="searchBox"
             value=""
@@ -180,7 +180,7 @@ const InfiniteScrollGrid = () => {
             onChange={(value) => initialFetch && filters.searchFilter(value)}
           />
         </div>
-        <div className="flex justify-between items-center">
+        <div className="w-full flex justify-between md:items-center flex-col md:flex-row gap-y-2">
           <p>
             Showing {data?.getProducts?.data.length} of over{" "}
             <span className="font-semibold">
@@ -217,7 +217,7 @@ const InfiniteScrollGrid = () => {
             <Spinner width={10} height={10} />
           </div>
         ) : (
-          <div className="pt-4 grid grid-flow-row grid-cols-[repeat(auto-fit,225px)] gap-6 grow auto-rows-max">
+          <div className="w-min sm:w-full pt-4 grid grid-flow-row grid-cols-[repeat(auto-fit,225px)] gap-6 grow auto-rows-max">
             {grid.getRowModel().flatRows.map((item, idx) => (
               // eslint-disable-next-line react/no-array-index-key
               <Card key={idx} data={item.original as ProductObject} />
