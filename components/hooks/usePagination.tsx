@@ -57,13 +57,14 @@ const usePagination = ({
   }, [numOfPages, currentPageIndx]);
 
   useEffect(() => {
-    console.log("Page change CB");
-    const settings = {
-      offset: currentPageIndx * pageSize,
-      limit: pageSize,
-      rawCurrPageIdx: currentPageIndx,
-    };
-    pageChangeHandler(settings);
+    if (totalCount) {
+      const settings = {
+        offset: currentPageIndx * pageSize,
+        limit: pageSize,
+        rawCurrPageIdx: currentPageIndx,
+      };
+      pageChangeHandler(settings);
+    }
   }, [currentPageIndx]);
 
   return {

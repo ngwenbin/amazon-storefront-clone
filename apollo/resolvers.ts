@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randNumber } from "@ngneat/falso";
 import { GraphQLError } from "graphql";
-import { delay } from "../utils";
+import { delay } from "~/utils";
 import data from "./mockData.json";
 
 // eslint-disable-next-line import/prefer-default-export

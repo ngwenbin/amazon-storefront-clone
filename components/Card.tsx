@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { ProductObject } from "../utils";
+import { ProductObject } from "~/utils";
 
 interface CardProps {
   data: ProductObject;

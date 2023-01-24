@@ -5,9 +5,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { ProductObject } from "../../../utils";
-import Card from "../../Card";
-import Spinner from "../../Spinner";
+import { Card, Spinner } from "~/components";
+import { ProductObject } from "~/utils";
 
 const GetProductsQuery = gql`
   query GetProductsQuery($limit: Int!, $offset: Int) {

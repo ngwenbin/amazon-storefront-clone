@@ -6,11 +6,15 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { ProductCategories, ProductObject } from "../../../utils";
-import Card from "../../Card";
-import DebouncedInput from "../../DebouncedInput";
-import Spinner from "../../Spinner";
-import { usePagination } from "../../hooks";
+import {
+  Card,
+  DebouncedInput,
+  Filter,
+  FilterReturnValue,
+  Spinner,
+} from "~/components";
+import { usePagination } from "~/components/hooks";
+import { ProductCategories, ProductObject, enumToOptions } from "~/utils";
 import Pagination from "./Pagination";
 
 const GetPaginatedProductsQuery = gql`
@@ -54,6 +58,7 @@ const PaginatedGrid = () => {
         limit: ITEMS_PER_PAGE,
         offset: 0,
       },
+      notifyOnNetworkStatusChange: true,
     }
   );
   const [productData, setProductData] = useState<
@@ -110,68 +115,68 @@ const PaginatedGrid = () => {
   });
 
   const pagination = usePagination({
-    pageChangeHandler: (settings) =>
-      refetch({
-        limit: settings.limit,
-        offset: settings.offset,
-      }),
+    pageChangeHandler: (settings) => {
+      if (!loading) {
+        console.log("Page change CB");
+        refetch({
+          limit: settings.limit,
+          offset: settings.offset,
+        });
+      }
+    },
     totalCount: productData?.totalCount,
     ItemsPerPage: ITEMS_PER_PAGE,
   });
 
-  const onFilterCallback = (updatedFilter: any) => {
-    pagination.setPage(0);
-    refetch({
-      limit: pagination.getPageSize(),
-      offset: 0,
-      filter: { ...updatedFilter },
-    });
+  const onFilterCallback = (updatedFilter?: FilterReturnValue) => {
+    if (!loading) {
+      console.log("Filter CB");
+
+      pagination.setPage(0);
+      refetch({
+        limit: pagination.getPageSize(),
+        offset: 0,
+        filter: updatedFilter,
+      });
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center h-full justify-center">
-        <Spinner width={10} height={10} />
-      </div>
-    );
-  }
   return (
-    <div className="flex">
+    <div className="flex h-full">
       <div className="pr-8">
-        <p className="font-semibold pb-8 py-3">Filter by</p>
-        <div className="flex flex-col gap-y-4">
-          <div>
-            <datalist id="categories-list">
-              {Object.values(ProductCategories).map((listValue) => (
-                <option value={listValue} key={listValue} />
-              ))}
-            </datalist>
-          </div>
-          <DebouncedInput
-            id="categories"
+        <p className="font-bold py-3 text-lg">Filter by</p>
+        <div className="flex flex-col gap-y-8 h-full">
+          <Filter
             value=""
-            onChange={(value) =>
-              value && onFilterCallback({ categories: value })
-            }
-            list="categories-list"
+            label="Categories"
+            filterKey="categories"
+            filterOptions={enumToOptions(ProductCategories)}
+            onChange={(value) => onFilterCallback(value)}
           />
         </div>
       </div>
-      <div className="flex flex-col gap-y-8 grow">
-        <DebouncedInput
-          id="searchBox"
-          value=""
-          onChange={(value) => console.log("Search", value)}
-        />
-        <div className="grid grid-flow-row grid-cols-[repeat(auto-fit,225px)] gap-6 grow">
-          {grid.getRowModel().flatRows.map((item, idx) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Card key={idx} data={item.original as ProductObject} />
-          ))}
+      <div className="flex flex-col gap-y-8 grow pb-10">
+        <div className="absolute top-3 w-[50%]">
+          <DebouncedInput
+            id="searchBox"
+            value=""
+            trigger="keydown"
+            onChange={(value) => console.log("Search", value)}
+          />
         </div>
-        <div>
-          <Pagination pagination={pagination} />
-        </div>
+        {loading ? (
+          <div className="flex items-center h-full justify-center">
+            <Spinner width={10} height={10} />
+          </div>
+        ) : (
+          <div className="pt-4 grid grid-flow-row grid-cols-[repeat(auto-fit,225px)] gap-6 grow auto-rows-max">
+            {grid.getRowModel().flatRows.map((item, idx) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Card key={idx} data={item.original as ProductObject} />
+            ))}
+          </div>
+        )}
+        <Pagination pagination={pagination} />
       </div>
     </div>
   );
