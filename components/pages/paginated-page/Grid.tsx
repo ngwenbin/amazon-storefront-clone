@@ -6,14 +6,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Card,
-  DebouncedInput,
-  Filter,
-  FilterReturnValue,
-  Spinner,
-} from "~/components";
-import { usePagination } from "~/components/hooks";
+import { Card, DebouncedInput, Filter, Spinner } from "~/components";
+import { useFilter, usePagination } from "~/components/hooks";
 import { ProductCategories, ProductObject, enumToOptions } from "~/utils";
 import Pagination from "./Pagination";
 
@@ -21,10 +15,16 @@ const GetPaginatedProductsQuery = gql`
   query GetPaginatedProductsQuery(
     $limit: Int!
     $offset: Int
-    $filter: ProductFilterInput
+    $filter: [ProductFilterInput]
+    $searchKey: String
   ) {
     getPaginatedProducts(
-      input: { limit: $limit, offset: $offset, filter: $filter }
+      input: {
+        limit: $limit
+        offset: $offset
+        filter: $filter
+        searchKey: $searchKey
+      }
     ) {
       totalCount
       data {
@@ -117,7 +117,6 @@ const PaginatedGrid = () => {
   const pagination = usePagination({
     pageChangeHandler: (settings) => {
       if (!loading) {
-        console.log("Page change CB");
         refetch({
           limit: settings.limit,
           offset: settings.offset,
@@ -128,31 +127,19 @@ const PaginatedGrid = () => {
     ItemsPerPage: ITEMS_PER_PAGE,
   });
 
-  const onFilterCallback = (filterKey?: FilterReturnValue) => {
-    if (!loading) {
-      console.log("Filter CB");
-
-      pagination.setPage(0);
-      refetch({
-        limit: pagination.getPageSize,
-        offset: 0,
-        filter: filterKey,
-      });
-    }
-  };
-
-  // const onSearchCallback = (searchKey?: FilterReturnValue) => {
-  //   if (!loading) {
-  //     console.log("Filter CB");
-
-  //     pagination.setPage(0);
-  //     refetch({
-  //       limit: pagination.getPageSize,
-  //       offset: 0,
-  //       filter: searchKey,
-  //     });
-  //   }
-  // };
+  const filters = useFilter({
+    filterChangeHandler: (settings) => {
+      if (!loading) {
+        pagination.setPage(0);
+        refetch({
+          limit: pagination.getPageSize,
+          offset: 0,
+          filter: settings?.filterArray,
+          searchKey: settings?.search,
+        });
+      }
+    },
+  });
 
   return (
     <div className="flex h-full">
@@ -164,17 +151,20 @@ const PaginatedGrid = () => {
             label="Categories"
             filterKey="categories"
             filterOptions={enumToOptions(ProductCategories)}
-            onChange={(value) => onFilterCallback(value)}
+            onChange={(value) =>
+              filters.applyFilter(value.filterKey, value.filterValue)
+            }
           />
         </div>
       </div>
       <div className="flex flex-col gap-y-8 grow pb-10">
-        <div className="absolute top-3 w-[50%]">
+        <div className="absolute top-4 w-[50%]">
           <DebouncedInput
             id="searchBox"
             value=""
+            placeholder="Search products"
             trigger="keydown"
-            onChange={(value) => console.log("Search", value)}
+            onChange={(value) => filters.searchFilter(value)}
           />
         </div>
         {loading ? (

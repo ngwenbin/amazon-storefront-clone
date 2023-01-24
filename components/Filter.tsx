@@ -2,7 +2,8 @@ import React from "react";
 import DebouncedInput from "./DebouncedInput";
 
 export interface FilterReturnValue {
-  [filterKey: string]: string | number;
+  filterKey: string;
+  filterValue: string | number | undefined;
 }
 
 interface FilterOptions {
@@ -39,13 +40,7 @@ export const Filter = ({
       value={value ?? ""}
       trigger="debounce"
       placeholder="Filter..."
-      onChange={(value) => {
-        if (value) {
-          onChange({ [filterKey]: value });
-        } else {
-          onChange();
-        }
-      }}
+      onChange={(value) => onChange({ filterKey, filterValue: value })}
       list={`${filterKey}-list`}
     />
   </div>

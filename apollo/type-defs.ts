@@ -43,13 +43,18 @@ export const typeDefs = gql`
   }
 
   input ProductFilterInput {
+    name: String
+    brand: String
+    description: String
     categories: String
+    ingredients: String
   }
 
   input PaginationInput {
     limit: Int!
     offset: Int
-    filter: ProductFilterInput
+    filter: [ProductFilterInput]
+    searchKey: String
   }
 
   type Query {
