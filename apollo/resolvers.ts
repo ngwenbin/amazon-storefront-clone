@@ -2,7 +2,7 @@
 import { randNumber } from "@ngneat/falso";
 import dayjs from "dayjs";
 import { GraphQLError } from "graphql";
-import { delay, fuzzyObjectKeySearch } from "~/utils";
+import { fuzzyObjectKeySearch } from "~/utils";
 import data from "./mockData.json";
 
 // eslint-disable-next-line import/prefer-default-export
@@ -11,7 +11,6 @@ export const resolvers = {
     async getProducts(_parent, args, _context, _info) {
       try {
         console.log("GETTING PAGINTED PRODUCTS", args);
-        await delay(randNumber({ min: 400, max: 1000, precision: 100 }));
         const {
           input: { limit, offset, filter: filters, searchKey, orderBy },
         } = args;
@@ -77,7 +76,6 @@ export const resolvers = {
     async getPaginatedProducts(_parent, args, _context, _info) {
       try {
         console.log("GETTING PAGINTED PRODUCTS", args);
-        await delay(randNumber({ min: 400, max: 1000, precision: 100 }));
         const {
           input: { limit, offset, filter: filters, searchKey, orderBy },
         } = args;
