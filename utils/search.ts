@@ -3,7 +3,7 @@ const fuzzyObjectKeySearch = (
   searchKey: string,
   dict: Array<object>,
   keyToSearch: string,
-  cutOffWeight = 0.3
+  cutOffWeight = 0.2
 ) => {
   const kFactor = 2;
   const getWeight = (str: string) => {
