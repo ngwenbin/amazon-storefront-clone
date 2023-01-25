@@ -59,9 +59,7 @@ const InfiniteScrollGrid = () => {
       variables: {
         limit: ITEMS_PER_PAGE,
         offset: 0,
-        orderBy: {
-          popularity: "descending",
-        },
+        orderBy: {},
       },
     });
   const [initialFetch, setInitialFetch] = useState(false);
@@ -106,15 +104,10 @@ const InfiniteScrollGrid = () => {
     if (data && data?.getProducts) {
       if (!initialFetch) {
         setInitialFetch(true);
-        console.log("ok");
       }
       setProductData(data.getProducts);
     }
   }, [data]);
-
-  useEffect(() => {
-    console.log(loading);
-  }, [loading]);
 
   const filters = useFilter({
     filterChangeHandler: (settings) => {
@@ -136,7 +129,9 @@ const InfiniteScrollGrid = () => {
           filter: filters.getFilters()?.filterArray,
           searchKey: filters.getFilters()?.search,
           orderBy: {
-            [settings?.sortKey]: settings?.sortDirection,
+            ...(settings?.sortKey
+              ? { [settings?.sortKey]: settings?.sortDirection }
+              : {}),
           },
         });
       }
@@ -204,6 +199,7 @@ const InfiniteScrollGrid = () => {
                     sortBy.setSortBy({ sortKey, sortDirection });
                 }}
               >
+                <option value="-descending">Relevance</option>
                 <option value="popularity-descending">Featured</option>
                 <option value="price-ascending">Price: Low to High</option>
                 <option value="price-descending">Price: High to Low</option>

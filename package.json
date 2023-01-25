@@ -17,6 +17,7 @@
     "clsx": "^1.2.1",
     "dayjs": "^1.11.7",
     "deepmerge": "^4.2.2",
+    "fuzzysort": "^2.0.4",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",

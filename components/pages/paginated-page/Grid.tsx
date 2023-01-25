@@ -61,9 +61,7 @@ const PaginatedGrid = () => {
       variables: {
         limit: ITEMS_PER_PAGE,
         offset: 0,
-        orderBy: {
-          popularity: "descending",
-        },
+        orderBy: {},
       },
       notifyOnNetworkStatusChange: true,
     }
@@ -152,14 +150,15 @@ const PaginatedGrid = () => {
     sortByChangeHandler: (settings) => {
       if (!loading) {
         pagination.setPage(0);
-        console.log(settings);
         refetch({
           limit: pagination.getPageSize,
           offset: 0,
           filter: filters.getFilters()?.filterArray,
           searchKey: filters.getFilters()?.search,
           orderBy: {
-            [settings?.sortKey]: settings?.sortDirection,
+            ...(settings?.sortKey
+              ? { [settings?.sortKey]: settings?.sortDirection }
+              : {}),
           },
         });
       }
@@ -212,6 +211,7 @@ const PaginatedGrid = () => {
                   sortBy.setSortBy({ sortKey, sortDirection });
                 }}
               >
+                <option value="-descending">Relevance</option>
                 <option value="popularity-descending">Featured</option>
                 <option value="price-ascending">Price: Low to High</option>
                 <option value="price-descending">Price: High to Low</option>

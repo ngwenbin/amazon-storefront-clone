@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randNumber } from "@ngneat/falso";
 import dayjs from "dayjs";
+import fuzzysort from "fuzzysort";
 import { GraphQLError } from "graphql";
-import { fuzzyObjectKeySearch } from "~/utils";
+import isEmpty from "lodash/isEmpty";
 import data from "./mockData.json";
 
 // eslint-disable-next-line import/prefer-default-export
@@ -31,13 +32,15 @@ export const resolvers = {
           });
         }
         if (searchKey) {
-          processedData = fuzzyObjectKeySearch(
-            searchKey,
-            processedData,
-            "name"
-          );
+          processedData = fuzzysort
+            .go(searchKey, processedData, {
+              key: "name",
+              threshold: -5000,
+            })
+            .map((s) => s.obj);
         }
-        if (orderBy) {
+
+        if (!isEmpty(orderBy)) {
           const [key, value] = Object.entries(orderBy)[0];
           const sortOrder = value === "descending" ? -1 : 1;
           if (key === "createdAt") {
@@ -96,13 +99,15 @@ export const resolvers = {
           });
         }
         if (searchKey) {
-          processedData = fuzzyObjectKeySearch(
-            searchKey,
-            processedData,
-            "name"
-          );
+          processedData = fuzzysort
+            .go(searchKey, processedData, {
+              key: "name",
+              threshold: -5000,
+            })
+            .map((s) => s.obj);
         }
-        if (orderBy) {
+
+        if (!isEmpty(orderBy)) {
           const [key, value] = Object.entries(orderBy)[0];
           const sortOrder = value === "descending" ? -1 : 1;
           if (key === "createdAt") {
