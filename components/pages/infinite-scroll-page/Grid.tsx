@@ -171,7 +171,7 @@ const InfiniteScrollGrid = () => {
             id="searchBox"
             value=""
             placeholder="Search products"
-            trigger="keydown"
+            trigger="debounce"
             onChange={(value) => initialFetch && filters.searchFilter(value)}
           />
         </div>

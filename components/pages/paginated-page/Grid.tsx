@@ -187,7 +187,7 @@ const PaginatedGrid = () => {
             id="searchBox"
             value=""
             placeholder="Search products"
-            trigger="keydown"
+            trigger="debounce"
             onChange={(value) => filters.searchFilter(value)}
           />
         </div>
