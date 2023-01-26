@@ -6,7 +6,6 @@ An experimental prototype to explore using React-table's headless API to build p
 
 - Integrated common e-commerce operations such as fuzzy search, filter, sort and pagination.
 - Pure BFF architecture using Apollo server serving a JSON data file.
-- Search function uses a weighted ngram fuzzy search algorithm.
 - Added an infinite scroll style in addition to the pagination.
 - All e-commerce operations uses Apollo Client which is a cache based Graphql Client, allowing us to efficiently enable infinite scroll etc.
 

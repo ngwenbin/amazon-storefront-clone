@@ -101,8 +101,8 @@ export const resolvers = {
         if (searchKey) {
           processedData = fuzzysort
             .go(searchKey, processedData, {
-              key: "name",
-              threshold: -5000,
+              keys: ["name", "brand"],
+              threshold: -100000000,
             })
             .map((s) => s.obj);
         }
